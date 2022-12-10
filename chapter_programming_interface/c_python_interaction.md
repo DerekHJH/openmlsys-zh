@@ -29,8 +29,7 @@ Binding）。在Pybind11出现以前，将C和C++函数进行Python绑定的手�
 
 2.  GPU Kernel实现：GPU Kernel用于调用GPU实现加速计算。
 
-3.  GPU Kernel注册：算子注册用于将GPU
-    Kernel及必要信息注册给框架，由框架完成对GPU Kernel的调用。
+3.  GPU Kernel注册：算子注册用于将GPU Kernel及必要信息注册给框架，由框架完成对GPU Kernel的调用。
 
 **1.注册算子原语**
 算子原语通常包括算子名、算子输入、算子属性（初始化时需要填的参数，如卷积的stride、padding）、输入数据合法性校验、输出数据类型推导和维度推导。假设需要编写加法算子，主要内容如下：
@@ -65,7 +64,7 @@ class TensorAdd(PrimitiveWithInfer):
         validator.check_tensor_type_same({'x2_dtype': x2_dtype}, [mstype.float32], self.name)
         return x1_dtype
 ```
-    
+
 在mindspore/ops/operations/math_ops.py文件内注册加法算子原语后，需要在mindspore/ops/operations/\_\_init\_\_中导出，方便python导入模块时候调用。
 ```python
 # mindspore/ops/operations/__init__.py
@@ -176,6 +175,6 @@ MS_REG_GPU_KERNEL_ONE(TensorAddV2, KernelAttr()
                                     .AddOutputAttr(kNumberTypeInt32),
                       TensorAddV2GpuKernel, int)
 ```
-    
+
 完成上述三步工作后，需要把MindSpore重新编译，在源码的根目录执行bash
 build.sh -e gpu，最后使用算子进行验证。
